@@ -50,7 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Tue Nov 16 2004 Nalin Dahyabhai <nalin@redhat.com> - 0:2.0.1-3
-- rebuild
+- rebuild (#139161)
 
 * Mon Aug 30 2004 David Malcolm <dmalcolm@redhat.com> - 0:2.0.1-2
 - Rewrote description; added requirement for openldap
