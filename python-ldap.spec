@@ -3,15 +3,15 @@
 %define openldap_version 0:2.1.22
 
 Name:           python-ldap
-Version:        2.0.1
-Release:        3
+Version:        2.0.6
+Release:        1
 Epoch:          0
 Summary:        An object-oriented API to access LDAP directory servers.
 
 Group:          System Environment/Libraries
 License:        PSF - see LICENSE
 URL:            http://python-ldap.sourceforge.net/
-Source0:        http://dl.sf.net/sourceforge/python-ldap/python-ldap-2.0.1.tar.gz
+Source0:        http://dl.sf.net/sourceforge/python-ldap/python-ldap-2.0.6.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # the openldap from RHL <= 9 and RHEL <= 3 is too old for python-ldap
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES README TODO Demo
 
 %changelog
+* Tue Feb  8 2005 David Malcolm <dmalcolm@redhat.com> - 0:2.0.6-1
+- 2.0.6
+
 * Tue Nov 16 2004 Nalin Dahyabhai <nalin@redhat.com> - 0:2.0.1-3
 - rebuild (#139161)
 
