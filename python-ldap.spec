@@ -1,25 +1,23 @@
 %define pyver  %(%{__python} -c 'import sys ; print sys.version[:3]')
-%define pynext %(%{__python} -c 'print %{pyver} + 0.1')
-%define openldap_version 0:2.1.22
+%define openldap_version 2.1.22
 
 Name:           python-ldap
 Version:        2.0.6
 Release:        3
-Epoch:          0
 Summary:        An object-oriented API to access LDAP directory servers.
 
 Group:          System Environment/Libraries
-License:        PSF - see LICENSE
+License:        PSF - see LICENCE
 URL:            http://python-ldap.sourceforge.net/
 Source0:        http://dl.sf.net/sourceforge/python-ldap/python-ldap-2.0.6.tar.gz
+Patch0:         python-ldap-2.0.6-rpath.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # the openldap from RHL <= 9 and RHEL <= 3 is too old for python-ldap
 BuildRequires:  openldap-devel >= %{openldap_version}, openssl-devel
-BuildRequires:  python >= 0:2.2, python-devel >= 0:2.2
-Requires:	openldap >= %{openldap_version}
-Requires:       python >= 0:%{pyver}, python < 0:%{pynext}
-Requires:       %{_libdir}/python%{pyver}/site-packages
+BuildRequires:  python-devel >= 2.2
+Requires:       openldap >= %{openldap_version}
+Requires:       python-abi = %(%{__python} -c "import sys ; print sys.version[:3]")
 
 %description
 python-ldap provides an object-oriented API for working with LDAP within
@@ -29,6 +27,7 @@ OpenLDAP 2.x libraries, and contains modules for other LDAP-related tasks
 
 %prep
 %setup -q 
+%patch -p1
 
 %build
 %{__python} setup.py build
@@ -46,11 +45,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}-%{version}.files
 %defattr(-,root,root,-)
-%doc LICENSE CHANGES README TODO Demo
+%doc LICENCE CHANGES README TODO Demo
 
 %changelog
 * Tue Mar 22 2005 Warren Togami <wtogami@redhat.com> - 0:2.0.6-3
-- add LICENSE (#150842)
+- add LICENCE (#150842)
+- remove epochs
+- simplify python reqs
+- remove invalid rpath
 
 * Wed Mar 16 2005 Dan Williams <dcbw@redhat.com> - 0:2.0.6-2
 - rebuilt to pick up new libssl.so.5
