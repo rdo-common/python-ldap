@@ -1,9 +1,10 @@
 %define pyver  %(%{__python} -c 'import sys ; print sys.version[:3]')
 %define pynext %(%{__python} -c 'print %{pyver} + 0.1')
+%define openldap_version 0:2.1.22
 
 Name:           python-ldap
 Version:        2.0.1
-Release:        1
+Release:        2
 Epoch:          0
 Summary:        An object-oriented API to access LDAP directory servers.
 
@@ -14,16 +15,17 @@ Source0:        http://dl.sf.net/sourceforge/python-ldap/python-ldap-2.0.1.tar.g
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # the openldap from RHL <= 9 is know to be broken with python-ldap
-BuildRequires:  openldap-devel >= 0:2.1.22, openssl-devel
+BuildRequires:  openldap-devel >= %{openldap_version}, openssl-devel
 BuildRequires:  python >= 0:2.2, python-devel >= 0:2.2
+Requires:	openldap >= %{openldap_version}
 Requires:       python >= 0:%{pyver}, python < 0:%{pynext}
 Requires:       %{_libdir}/python%{pyver}/site-packages
 
 %description
-python-ldap provides an object-oriented API to access LDAP directory servers 
-from Python programs. Mainly it wraps the OpenLDAP 2.x libs for that purpose.
-Additionally the package contains modules for other LDAP-related stuff 
-(e.g. processing LDIF, LDAPURLs, LDAPv3 schema, etc.).
+python-ldap provides an object-oriented API for working with LDAP within
+Python programs.  It allows access to LDAP directory servers by wrapping the 
+OpenLDAP 2.x libraries, and contains modules for other LDAP-related tasks 
+(including processing LDIF, LDAPURLs, LDAPv3 schema, etc.).
 
 %prep
 %setup -q 
@@ -47,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES README TODO Demo
 
 %changelog
+* Mon Aug 30 2004 David Malcolm <dmalcolm@redhat.com> - 0:2.0.1-2
+- Rewrote description; added requirement for openldap
+
 * Tue Aug 17 2004 David Malcolm <dmalcolm@redhat.com> - 0:2.0.1-1
 - imported into Red Hat's packaging system from Fedora.us; set release to 1
 
