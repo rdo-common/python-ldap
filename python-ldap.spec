@@ -3,7 +3,7 @@
 
 Name:           python-ldap
 Version:        2.0.6
-Release:        5
+Release: 5.1
 Epoch:          0
 Summary:        An object-oriented API to access LDAP directory servers.
 
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENCE CHANGES README TODO Demo
 
 %changelog
+* Fri Dec 09 2005 Jesse Keating <jkeating@redhat.com>
+- rebuilt
+
 * Tue Nov  8 2005 Tomas Mraz <tmraz@redhat.com> - 2.0.6-5
 - rebuilt with new openssl
 
