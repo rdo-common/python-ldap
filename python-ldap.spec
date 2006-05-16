@@ -2,23 +2,23 @@
 %define openldap_version 2.1.22
 
 Name:           python-ldap
-Version:        2.0.6
-Release: 5.2.1
-Epoch:          0
+Version:        2.2.0
+Release: 	1
 Summary:        An object-oriented API to access LDAP directory servers.
 
 Group:          System Environment/Libraries
 License:        PSF - see LICENCE
 URL:            http://python-ldap.sourceforge.net/
-Source0:        http://dl.sf.net/sourceforge/python-ldap/python-ldap-2.0.6.tar.gz
-Patch0:         python-ldap-2.0.6-rpath.patch
+Source:         %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # the openldap from RHL <= 9 and RHEL <= 3 is too old for python-ldap
 BuildRequires:  openldap-devel >= %{openldap_version}, openssl-devel
-BuildRequires:  python-devel >= 2.2
+BuildRequires:  python-devel >= 2.2, cyrus-sasl-devel
 Requires:       openldap >= %{openldap_version}
 Requires:       python-abi = %(%{__python} -c "import sys ; print sys.version[:3]")
+
+Patch0:         python-ldap-2.2.0-dirs.patch
 
 %description
 python-ldap provides an object-oriented API for working with LDAP within
@@ -28,7 +28,7 @@ OpenLDAP 2.x libraries, and contains modules for other LDAP-related tasks
 
 %prep
 %setup -q 
-%patch -p1
+%patch0 -p1 -b .dirs
 
 %build
 %{__python} setup.py build
@@ -49,6 +49,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENCE CHANGES README TODO Demo
 
 %changelog
+* Tue May 15 2006 Matthew Barnes <mbarnes@redhat.com> - 2.2.0-1
+- Update to 2.2.0
+- Update python-ldap-2.0.6-rpath.patch and rename it to
+  python-ldap-2.2.0-dirs.patch.
+
 * Fri Feb 10 2006 Jesse Keating <jkeating@redhat.com> - 0:2.0.6-5.2.1
 - bump again for double-long bug on ppc(64)
 
