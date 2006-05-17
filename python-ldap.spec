@@ -3,7 +3,7 @@
 
 Name:           python-ldap
 Version:        2.2.0
-Release: 	1
+Release: 	2
 Epoch:		0
 Summary:        An object-oriented API to access LDAP directory servers.
 Group:          System Environment/Libraries
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENCE CHANGES README TODO Demo
 
 %changelog
+* Wed May 17 2006 Matthew Barnes <mbarnes@redhat.com> - 2.2.0-2
+- Put back the epoch line... happy beehive?
+
 * Tue May 15 2006 Matthew Barnes <mbarnes@redhat.com> - 2.2.0-1
 - Update to 2.2.0
 - Update python-ldap-2.0.6-rpath.patch and rename it to
