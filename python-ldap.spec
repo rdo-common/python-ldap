@@ -4,8 +4,8 @@
 Name:           python-ldap
 Version:        2.2.0
 Release: 	1
+Epoch:		0
 Summary:        An object-oriented API to access LDAP directory servers.
-
 Group:          System Environment/Libraries
 License:        PSF - see LICENCE
 URL:            http://python-ldap.sourceforge.net/
