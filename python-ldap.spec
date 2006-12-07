@@ -1,9 +1,8 @@
-%define pyver  %(%{__python} -c 'import sys ; print sys.version[:3]')
 %define openldap_version 2.1.22
 
 Name:           python-ldap
 Version:        2.2.0
-Release: 	2.1
+Release: 	3
 Epoch:		0
 Summary:        An object-oriented API to access LDAP directory servers.
 Group:          System Environment/Libraries
@@ -16,7 +15,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  openldap-devel >= %{openldap_version}, openssl-devel
 BuildRequires:  python-devel >= 2.2, cyrus-sasl-devel
 Requires:       openldap >= %{openldap_version}
-Requires:       python-abi = %(%{__python} -c "import sys ; print sys.version[:3]")
 
 Patch0:         python-ldap-2.2.0-dirs.patch
 
@@ -38,7 +36,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --root=$RPM_BUILD_ROOT \
   --record=INSTALLED_FILES
 sed 's|^\(.*\.pyo\)$|%ghost \1|' < INSTALLED_FILES > %{name}-%{version}.files
-find $RPM_BUILD_ROOT%{_libdir}/python%{pyver}/site-packages/* -type d \
+find $RPM_BUILD_ROOT%{_libdir}/python?.?/site-packages/* -type d \
   | sed "s|^$RPM_BUILD_ROOT|%dir |" >> %{name}-%{version}.files
 
 %clean
@@ -49,7 +47,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENCE CHANGES README TODO Demo
 
 %changelog
-* Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - sh: line 0: fg: no job control
+* Thu Dec  7 2006 Jeremy Katz <katzj@redhat.com> - 0:2.2.0-3
+- rebuild against python 2.5
+
+* Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com>
 - rebuild
 
 * Wed May 17 2006 Matthew Barnes <mbarnes@redhat.com> - 2.2.0-2
