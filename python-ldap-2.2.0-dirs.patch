@@ -1,11 +1,11 @@
---- python-ldap-2.2.0/setup.cfg.dirs	2005-07-28 08:56:49.000000000 -0400
-+++ python-ldap-2.2.0/setup.cfg	2006-05-16 15:39:09.000000000 -0400
+--- python-ldap-2.3/setup.cfg.dirs	2006-11-15 12:26:26.000000000 -0500
++++ python-ldap-2.3/setup.cfg	2007-06-08 08:55:58.000000000 -0400
 @@ -7,8 +7,7 @@
  # for wrapping OpenLDAP 2 libs
  [_ldap]
  
--library_dirs = /usr/local/openldap-REL_ENG_2_1/lib /usr/local/cyrus-sasl/lib
--include_dirs = /usr/local/openldap-REL_ENG_2_1/include /usr/local/cyrus-sasl/include
+-library_dirs = /usr/local/openldap-2.3/lib
+-include_dirs = /usr/local/openldap-2.3/include /usr/include/sasl
 +include_dirs = /usr/include/sasl
  
  extra_compile_args = 

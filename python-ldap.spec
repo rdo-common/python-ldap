@@ -1,22 +1,35 @@
+%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+
 %define openldap_version 2.1.22
 
-Name:           python-ldap
-Version:        2.2.0
-Release: 	3
-Epoch:		0
-Summary:        An object-oriented API to access LDAP directory servers.
-Group:          System Environment/Libraries
-License:        PSF - see LICENCE
-URL:            http://python-ldap.sourceforge.net/
-Source:         %{name}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+### Abstract ###
+
+Name: python-ldap
+Version: 2.3
+Release: 1%{?dist}
+Epoch: 0
+License: PSF - see LICENCE
+Group: System Environment/Libraries
+Summary: An object-oriented API to access LDAP directory servers.
+URL: http://python-ldap.sourceforge.net/
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+Source: python-ldap-%{version}.tar.gz
+
+### Patches ###
+
+Patch0: python-ldap-2.2.0-dirs.patch
+
+### Dependencies ###
+
+Requires: openldap >= %{openldap_version}
+
+### Build Dependencies ###
 
 # the openldap from RHL <= 9 and RHEL <= 3 is too old for python-ldap
-BuildRequires:  openldap-devel >= %{openldap_version}, openssl-devel
-BuildRequires:  python-devel >= 2.2, cyrus-sasl-devel
-Requires:       openldap >= %{openldap_version}
-
-Patch0:         python-ldap-2.2.0-dirs.patch
+BuildRequires: openldap-devel >= %{openldap_version}
+BuildRequires: openssl-devel
+BuildRequires: python-devel >= 2.2
+BuildRequires: cyrus-sasl-devel
 
 %description
 python-ldap provides an object-oriented API for working with LDAP within
@@ -25,7 +38,7 @@ OpenLDAP 2.x libraries, and contains modules for other LDAP-related tasks
 (including processing LDIF, LDAPURLs, LDAPv3 schema, etc.).
 
 %prep
-%setup -q 
+%setup -q -n python-ldap-%{version}
 %patch0 -p1 -b .dirs
 
 %build
@@ -36,7 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install -O1 --root=$RPM_BUILD_ROOT \
   --record=INSTALLED_FILES
 sed 's|^\(.*\.pyo\)$|%ghost \1|' < INSTALLED_FILES > %{name}-%{version}.files
-find $RPM_BUILD_ROOT%{_libdir}/python?.?/site-packages/* -type d \
+find $RPM_BUILD_ROOT/%{python_sitearch}/* -type d \
   | sed "s|^$RPM_BUILD_ROOT|%dir |" >> %{name}-%{version}.files
 
 %clean
@@ -47,6 +60,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENCE CHANGES README TODO Demo
 
 %changelog
+* Fri Jun 08 2007 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.0-1.fc8
+- Update to 2.3
+- Spec file cleanups.
+
 * Thu Dec  7 2006 Jeremy Katz <katzj@redhat.com> - 0:2.2.0-3
 - rebuild against python 2.5
 
