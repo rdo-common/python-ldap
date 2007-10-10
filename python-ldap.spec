@@ -5,7 +5,7 @@
 ### Abstract ###
 
 Name: python-ldap
-Version: 2.3
+Version: 2.3.1
 Release: 1%{?dist}
 Epoch: 0
 License: PSF - see LICENCE
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENCE CHANGES README TODO Demo
 
 %changelog
+* Wed Oct 10 2007 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.1-1.fc8
+- Update to 2.3.1
+
 * Fri Jun 08 2007 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.0-1.fc8
 - Update to 2.3
 - Spec file cleanups.
