@@ -6,7 +6,7 @@
 
 Name: python-ldap
 Version: 2.3.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 0
 License: PSF - see LICENCE
 Group: System Environment/Libraries
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENCE CHANGES README TODO Demo
 
 %changelog
+* Wed Dec 05 2007 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.1-2.fc9
+- Rebuild against new openssl.
+
 * Wed Oct 10 2007 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.1-1.fc8
 - Update to 2.3.1
 
