@@ -5,15 +5,15 @@
 ### Abstract ###
 
 Name: python-ldap
-Version: 2.3.1
-Release: 3%{?dist}
+Version: 2.3.5
+Release: 1%{?dist}
 Epoch: 0
-License: PSF - see LICENCE
+License: Python
 Group: System Environment/Libraries
-Summary: An object-oriented API to access LDAP directory servers.
+Summary: An object-oriented API to access LDAP directory servers
 URL: http://python-ldap.sourceforge.net/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-Source: python-ldap-%{version}.tar.gz
+Source0: http://download.sourceforge.net/python-ldap/python-ldap-%{version}.tar.gz
 
 ### Patches ###
 
@@ -41,25 +41,38 @@ OpenLDAP 2.x libraries, and contains modules for other LDAP-related tasks
 %setup -q -n python-ldap-%{version}
 %patch0 -p1 -b .dirs
 
+# clean up cvs hidden files
+rm -rf Demo/Lib/ldap/.cvsignore Demo/.cvsignore Demo/Lib/ldif/.cvsignore Demo/Lib/ldap/async/.cvsignore \
+       Demo/Lib/.cvsignore Demo/Lib/ldapurl/.cvsignore
+
+# Fix interpreter
+sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
+
 %build
 %{__python} setup.py build
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__python} setup.py install -O1 --root=$RPM_BUILD_ROOT \
-  --record=INSTALLED_FILES
-sed 's|^\(.*\.pyo\)$|%ghost \1|' < INSTALLED_FILES > %{name}-%{version}.files
-find $RPM_BUILD_ROOT/%{python_sitearch}/* -type d \
-  | sed "s|^$RPM_BUILD_ROOT|%dir |" >> %{name}-%{version}.files
+%{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files -f %{name}-%{version}.files
+%files
 %defattr(-,root,root,-)
 %doc LICENCE CHANGES README TODO Demo
+%{python_sitearch}/_ldap.so
+%{python_sitearch}/dsml.py*
+%{python_sitearch}/ldapurl.py*
+%{python_sitearch}/ldif.py*
+%{python_sitearch}/ldap/
+%{python_sitearch}/python_ldap-%{version}-*.egg-info/
 
 %changelog
+* Wed Sep  3 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:2.3.5-1
+- fix license tag
+- update to 2.3.5
+
 * Sun Feb 17 2008 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.1-3.fc9
 - Rebuild with GCC 4.3
 
