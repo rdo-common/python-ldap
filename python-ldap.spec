@@ -6,7 +6,7 @@
 
 Name: python-ldap
 Version: 2.3.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/python_ldap-%{version}-*.egg-info/
 
 %changelog
+* Sat Nov 29 2008 Ignacio Vazquez-Abrams <ivazqueznet+rpm@gmail.com> - 0:2.3.5-2
+- Rebuild for Python 2.6
+
 * Wed Sep  3 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:2.3.5-1
 - fix license tag
 - update to 2.3.5
