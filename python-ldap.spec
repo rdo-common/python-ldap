@@ -6,7 +6,7 @@
 
 Name: python-ldap
 Version: 2.3.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/python_ldap-%{version}-*.egg-info/
 
 %changelog
+* Fri Jan 16 2009 Tomas Mraz <tmraz@redhat.com> - 0:2.3.5-3
+- rebuild with new openssl
+
 * Sat Nov 29 2008 Ignacio Vazquez-Abrams <ivazqueznet+rpm@gmail.com> - 0:2.3.5-2
 - Rebuild for Python 2.6
 
