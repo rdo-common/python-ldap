@@ -6,7 +6,7 @@
 
 Name: python-ldap
 Version: 2.3.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/python_ldap-%{version}-*.egg-info/
 
 %changelog
+* Thu Feb 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.3.5-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Fri Jan 16 2009 Tomas Mraz <tmraz@redhat.com> - 0:2.3.5-3
 - rebuild with new openssl
 
