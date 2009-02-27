@@ -1,0 +1,12 @@
+diff -up python-ldap-2.3.5/Modules/errors.c.fix-build-error python-ldap-2.3.5/Modules/errors.c
+--- python-ldap-2.3.5/Modules/errors.c.fix-build-error	2009-02-27 10:06:24.000000000 -0500
++++ python-ldap-2.3.5/Modules/errors.c	2009-02-27 10:06:40.000000000 -0500
+@@ -18,7 +18,7 @@ LDAPexception_class;
+ 
+ #ifdef LDAP_ASSERTION_FAILED
+ #define LDAP_ERROR_MAX          LDAP_ASSERTION_FAILED
+-#elif
++#else
+ #define LDAP_ERROR_MAX          LDAP_OTHER
+ #endif
+ 
