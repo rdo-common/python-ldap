@@ -5,8 +5,8 @@
 ### Abstract ###
 
 Name: python-ldap
-Version: 2.3.5
-Release: 5%{?dist}
+Version: 2.3.6
+Release: 1%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -18,8 +18,6 @@ Source0: http://download.sourceforge.net/python-ldap/python-ldap-%{version}.tar.
 ### Patches ###
 
 Patch0: python-ldap-2.2.0-dirs.patch
-
-Patch1: python-ldap-2.3.5-fix-build-error.patch
 
 ### Dependencies ###
 
@@ -42,7 +40,6 @@ OpenLDAP 2.x libraries, and contains modules for other LDAP-related tasks
 %prep
 %setup -q -n python-ldap-%{version}
 %patch0 -p1 -b .dirs
-%patch1 -p1 -b .fix-build-error
 
 # clean up cvs hidden files
 rm -rf Demo/Lib/ldap/.cvsignore Demo/.cvsignore Demo/Lib/ldif/.cvsignore Demo/Lib/ldap/async/.cvsignore \
@@ -72,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/python_ldap-%{version}-*.egg-info/
 
 %changelog
+* Wed Apr 01 2009 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.6-1
+- Update to 2.3.6
+
 * Fri Feb 27 2009 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.5-5
 - Fix a build error.
 
