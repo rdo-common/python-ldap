@@ -6,7 +6,7 @@
 
 Name: python-ldap
 Version: 2.3.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/python_ldap-%{version}-*.egg-info/
 
 %changelog
+* Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.3.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Wed Apr 01 2009 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.6-1
 - Update to 2.3.6
 
