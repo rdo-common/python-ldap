@@ -5,15 +5,15 @@
 ### Abstract ###
 
 Name: python-ldap
-Version: 2.3.6
-Release: 3%{?dist}
+Version: 2.3.10
+Release: 1%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
 Summary: An object-oriented API to access LDAP directory servers
 URL: http://python-ldap.sourceforge.net/
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-Source0: http://download.sourceforge.net/python-ldap/python-ldap-%{version}.tar.gz
+Source0: http://pypi.python.org/packages/source/p/python-ldap/python-ldap-%{version}.tar.gz
 
 ### Patches ###
 
@@ -69,6 +69,10 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/python_ldap-%{version}-*.egg-info/
 
 %changelog
+* Thu Jan 14 2010 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.10-1
+- Update to 2.3.10
+- Change source URI to pypi.python.org.
+
 * Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - 0:2.3.6-3
 - rebuilt with new openssl
 
