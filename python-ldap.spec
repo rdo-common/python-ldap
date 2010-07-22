@@ -6,7 +6,7 @@
 
 Name: python-ldap
 Version: 2.3.10
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/python_ldap-%{version}-*.egg-info/
 
 %changelog
+* Thu Jul 22 2010 David Malcolm <dmalcolm@redhat.com> - 0:2.3.10-2
+- Rebuilt for https://fedoraproject.org/wiki/Features/Python_2.7/MassRebuild
+
 * Thu Jan 14 2010 Matthew Barnes <mbarnes@redhat.com> - 0:2.3.10-1
 - Update to 2.3.10
 - Change source URI to pypi.python.org.
