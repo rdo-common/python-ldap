@@ -1,35 +1,35 @@
-%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
-
-%define openldap_version 2.1.22
-
 ### Abstract ###
 
 Name: python-ldap
-Version: 2.3.10
-Release: 2%{?dist}
+Version: 2.3.12
+Release: 1%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
 Summary: An object-oriented API to access LDAP directory servers
 URL: http://python-ldap.sourceforge.net/
-BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Source0: http://pypi.python.org/packages/source/p/python-ldap/python-ldap-%{version}.tar.gz
 
 ### Patches ###
-
+# Fedora specific patch
 Patch0: python-ldap-2.2.0-dirs.patch
 
 ### Dependencies ###
 
-Requires: openldap >= %{openldap_version}
+Requires: openldap 
 
 ### Build Dependencies ###
 
-# the openldap from RHL <= 9 and RHEL <= 3 is too old for python-ldap
-BuildRequires: openldap-devel >= %{openldap_version}
+BuildRequires: openldap-devel
 BuildRequires: openssl-devel
-BuildRequires: python-devel >= 2.2
+BuildRequires: python2-devel 
 BuildRequires: cyrus-sasl-devel
+
+# we don't want to provide private python extension libs
+%{?filter_setup:
+%filter_provides_in %{python_sitearch}/.*\.so$
+%filter_setup
+}
 
 %description
 python-ldap provides an object-oriented API for working with LDAP within
@@ -52,11 +52,8 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{__python} setup.py build
 
 %install
-rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
@@ -69,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/python_ldap-%{version}-*.egg-info/
 
 %changelog
+* Fri Sep 24 2010 Parag Nemade <paragn AT fedoraproject.org> - 0:2.3.12-1
+- Merge-review cleanup (#226343)
+
 * Thu Jul 22 2010 David Malcolm <dmalcolm@redhat.com> - 0:2.3.10-2
 - Rebuilt for https://fedoraproject.org/wiki/Features/Python_2.7/MassRebuild
 
