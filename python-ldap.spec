@@ -1,8 +1,8 @@
 ### Abstract ###
 
 Name: python-ldap
-Version: 2.3.12
-Release: 2%{?dist}
+Version: 2.4.6
+Release: 1%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -12,7 +12,7 @@ Source0: http://pypi.python.org/packages/source/p/python-ldap/python-ldap-%{vers
 
 ### Patches ###
 # Fedora specific patch
-Patch0: python-ldap-2.2.0-dirs.patch
+Patch0: python-ldap-2.4.6-dirs.patch
 
 ### Dependencies ###
 
