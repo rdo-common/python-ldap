@@ -63,9 +63,12 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{python_sitearch}/ldapurl.py*
 %{python_sitearch}/ldif.py*
 %{python_sitearch}/ldap/
-%{python_sitearch}/python_ldap-%{version}-*.egg-info/
+%{python_sitearch}/python_ldap-%{version}-*.egg-info
 
 %changelog
+* Mon Jan 02 2012 Jeroen van Meeuwen <vanmeeuwen@kolabsys.com> - 2.4.6-1
+- New upstream release
+
 * Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.3.12-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
