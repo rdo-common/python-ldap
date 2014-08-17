@@ -2,7 +2,7 @@
 
 Name: python-ldap
 Version: 2.4.6
-Release: 6%{?dist}
+Release: 7%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -66,6 +66,9 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{python_sitearch}/python_ldap-%{version}-*.egg-info
 
 %changelog
+* Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.4.6-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.4.6-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
