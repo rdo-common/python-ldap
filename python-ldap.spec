@@ -1,8 +1,8 @@
 ### Abstract ###
 
 Name: python-ldap
-Version: 2.4.6
-Release: 7%{?dist}
+Version: 2.4.16
+Release: 1%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -12,14 +12,14 @@ Source0: http://pypi.python.org/packages/source/p/python-ldap/python-ldap-%{vers
 
 ### Patches ###
 # Fedora specific patch
-Patch0: python-ldap-2.4.6-dirs.patch
+Patch0: python-ldap-2.4.16-dirs.patch
 
 ### Dependencies ###
-
 Requires: openldap 
+# LDAP controls, extop, syncrepl require pyasn1
+Requires: python-pyasn1
 
 ### Build Dependencies ###
-
 BuildRequires: openldap-devel
 BuildRequires: openssl-devel
 BuildRequires: python2-devel 
@@ -66,6 +66,10 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{python_sitearch}/python_ldap-%{version}-*.egg-info
 
 %changelog
+* Thu Sep 25 2014 Petr Spacek <pspacek@redhat.com> - 0:2.4.16-1
+- New upstream release fixes bug 1007820
+- Dependency on pyasn1 was added to fix bug 995545
+
 * Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.4.6-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
