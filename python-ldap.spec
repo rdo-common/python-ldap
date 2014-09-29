@@ -1,7 +1,7 @@
 ### Abstract ###
 
 Name: python-ldap
-Version: 2.4.16
+Version: 2.4.17
 Release: 1%{?dist}
 Epoch: 0
 License: Python
@@ -17,7 +17,7 @@ Patch0: python-ldap-2.4.16-dirs.patch
 ### Dependencies ###
 Requires: openldap 
 # LDAP controls, extop, syncrepl require pyasn1
-Requires: python-pyasn1
+Requires: python-pyasn1, python-pyasn1-modules
 
 ### Build Dependencies ###
 BuildRequires: openldap-devel
@@ -66,6 +66,10 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{python_sitearch}/python_ldap-%{version}-*.egg-info
 
 %changelog
+* Mon Sep 29 2014 Petr Spacek <pspacek@redhat.com> - 0:2.4.17-1
+- New upstream release adds features required in bug 1122486
+- Dependency on pyasn1-modules was added to fix bug 995545
+
 * Thu Sep 25 2014 Petr Spacek <pspacek@redhat.com> - 0:2.4.16-1
 - New upstream release fixes bug 1007820
 - Dependency on pyasn1 was added to fix bug 995545
