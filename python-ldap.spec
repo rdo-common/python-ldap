@@ -2,7 +2,7 @@
 
 Name: python-ldap
 Version: 2.4.17
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -66,6 +66,9 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{python_sitearch}/python_ldap-%{version}-*.egg-info
 
 %changelog
+* Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.4.17-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Mon Sep 29 2014 Petr Spacek <pspacek@redhat.com> - 0:2.4.17-1
 - New upstream release adds features required in bug 1122486
 - Dependency on pyasn1-modules was added to fix bug 995545
