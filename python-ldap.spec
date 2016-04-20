@@ -1,8 +1,8 @@
 ### Abstract ###
 
 Name: python-ldap
-Version: 2.4.17
-Release: 3%{?dist}
+Version: 2.4.25
+Release: 1%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -66,6 +66,9 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{python_sitearch}/python_ldap-%{version}-*.egg-info
 
 %changelog
+* Wed Apr 20 2016 Petr Spacek <pspacek@redhat.com> - 2.4.25-1
+- New upstream release 2.4.25
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0:2.4.17-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
