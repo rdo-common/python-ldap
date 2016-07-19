@@ -2,7 +2,7 @@
 
 Name: python-ldap
 Version: 2.4.25
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -66,6 +66,9 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{python_sitearch}/python_ldap-%{version}-*.egg-info
 
 %changelog
+* Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:2.4.25-2
+- https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
+
 * Wed Apr 20 2016 Petr Spacek <pspacek@redhat.com> - 2.4.25-1
 - New upstream release 2.4.25
 
