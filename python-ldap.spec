@@ -2,7 +2,7 @@
 
 Name: python-ldap
 Version: 2.4.25
-Release: 6%{?dist}
+Release: 7%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -15,9 +15,7 @@ Source0: http://pypi.python.org/packages/source/p/python-ldap/python-ldap-%{vers
 Patch0: python-ldap-2.4.16-dirs.patch
 
 ### Dependencies ###
-Requires: openldap 
 # LDAP controls, extop, syncrepl require pyasn1
-Requires: python-pyasn1, python-pyasn1-modules
 
 ### Build Dependencies ###
 BuildRequires: openldap-devel
@@ -31,11 +29,21 @@ BuildRequires: cyrus-sasl-devel
 %filter_setup
 }
 
-%description
-python-ldap provides an object-oriented API for working with LDAP within
-Python programs.  It allows access to LDAP directory servers by wrapping the 
-OpenLDAP 2.x libraries, and contains modules for other LDAP-related tasks 
+%global _description\
+python-ldap provides an object-oriented API for working with LDAP within\
+Python programs.  It allows access to LDAP directory servers by wrapping the\
+OpenLDAP 2.x libraries, and contains modules for other LDAP-related tasks\
 (including processing LDIF, LDAPURLs, LDAPv3 schema, etc.).
+
+%description %_description
+
+%package -n python2-ldap
+Summary: %summary
+Requires: openldap
+Requires: python-pyasn1, python-pyasn1-modules
+%{?python_provide:%python_provide python2-ldap}
+
+%description -n python2-ldap %_description
 
 %prep
 %setup -q -n python-ldap-%{version}
@@ -55,7 +63,7 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
 
 
-%files
+%files -n python2-ldap
 %defattr(-,root,root,-)
 %doc LICENCE CHANGES README TODO Demo
 %{python_sitearch}/_ldap.so
@@ -66,6 +74,10 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{python_sitearch}/python_ldap-%{version}-*.egg-info
 
 %changelog
+* Sat Aug 19 2017 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 0:2.4.25-7
+- Python 2 binary package renamed to python2-ldap
+  See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0:2.4.25-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
