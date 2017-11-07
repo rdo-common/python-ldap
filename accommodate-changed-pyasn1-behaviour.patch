@@ -1,0 +1,168 @@
+From a89bd2361a3971d0dc11908707509bbf5e1fd1ac Mon Sep 17 00:00:00 2001
+From: Ilya Etingof <etingof@gmail.com>
+Date: Wed, 11 Oct 2017 20:27:41 +0200
+Subject: [PATCH] accommodate changed pyasn1 behaviour
+
+pyasn1 versions prior to 0.2.3 indicate absent value by
+returning `None` object, later pyasn1 versions use
+the `noValue` sentinel object which is the basis for
+the `.hasValue()` method call (and .isValue property).
+
+This fix makes the code compatible with both `None` sentinel
+and the `.hasValue()` test thus making it compatible with all
+reasonable pyasn1 versions in circulation.
+---
+Index: Lib/ldap/syncrepl.py
+===================================================================
+RCS file: /cvsroot/python-ldap/python-ldap/Lib/ldap/syncrepl.py,v
+retrieving revision 1.9
+diff -u -r1.9 syncrepl.py
+--- Lib/ldap/syncrepl.py	9 Oct 2017 15:09:28 -0000	1.9
++++ Lib/ldap/syncrepl.py	7 Nov 2017 13:40:32 -0000
+@@ -131,11 +131,13 @@
+         d = decoder.decode(encodedControlValue, asn1Spec = syncStateValue())
+         state = d[0].getComponentByName('state')
+         uuid = UUID(bytes=d[0].getComponentByName('entryUUID'))
+-        self.cookie = d[0].getComponentByName('cookie')
++        cookie = d[0].getComponentByName('cookie')
++        if cookie is None or not cookie.hasValue():
++            self.cookie = None
++        else:
++            self.cookie = str(self.cookie)
+         self.state = self.__class__.opnames[int(state)]
+         self.entryUUID = str(uuid)
+-        if self.cookie is not None:
+-            self.cookie = str(self.cookie)
+ 
+ KNOWN_RESPONSE_CONTROLS[SyncStateControl.controlType] = SyncStateControl
+ 
+@@ -165,10 +167,10 @@
+ 
+     def decodeControlValue(self, encodedControlValue):
+         d = decoder.decode(encodedControlValue, asn1Spec = syncDoneValue())
+-        self.cookie = d[0].getComponentByName('cookie')
++        cookie = d[0].getComponentByName('cookie')
++        if cookie is not None and cookie.hasValue():
++            self.cookie = str(cookie)
+         self.refreshDeletes = d[0].getComponentByName('refreshDeletes')
+-        if self.cookie is not None:
+-            self.cookie = str(self.cookie)
+         if self.refreshDeletes is not None:
+             self.refreshDeletes = bool(self.refreshDeletes)
+ 
+@@ -263,7 +265,7 @@
+         for attr in [ 'newcookie', 'refreshDelete', 'refreshPresent', 'syncIdSet']:
+             comp = d[0].getComponentByName(attr)
+ 
+-            if comp is not None:
++            if comp is not None and comp.hasValue():
+ 
+                 if attr == 'newcookie':
+                     self.newcookie = str(comp)
+@@ -272,7 +274,7 @@
+                 val = dict()
+ 
+                 cookie = comp.getComponentByName('cookie')
+-                if cookie is not None:
++                if cookie is not None and cookie.hasValue():
+                     val['cookie'] = str(cookie)
+ 
+                 if attr.startswith('refresh'):
+Index: Lib/ldap/controls/ppolicy.py
+===================================================================
+RCS file: /cvsroot/python-ldap/python-ldap/Lib/ldap/controls/ppolicy.py,v
+retrieving revision 1.6
+diff -u -r1.6 ppolicy.py
+--- Lib/ldap/controls/ppolicy.py	9 Oct 2017 15:09:28 -0000	1.6
++++ Lib/ldap/controls/ppolicy.py	7 Nov 2017 13:40:32 -0000
+@@ -71,7 +71,7 @@
+   def decodeControlValue(self,encodedControlValue):
+     ppolicyValue,_ = decoder.decode(encodedControlValue,asn1Spec=PasswordPolicyResponseValue())
+     warning = ppolicyValue.getComponentByName('warning')
+-    if warning is None:
++    if warning is None or not warning.hasValue():
+       self.timeBeforeExpiration,self.graceAuthNsRemaining = None,None
+     else:
+       timeBeforeExpiration = warning.getComponentByName('timeBeforeExpiration')
+@@ -85,7 +85,7 @@
+       else:
+         self.graceAuthNsRemaining = None
+     error = ppolicyValue.getComponentByName('error')
+-    if error is None:
++    if error is None or not error.hasValue():
+       self.error = None
+     else:
+       self.error = int(error)
+Index: Lib/ldap/controls/psearch.py
+===================================================================
+RCS file: /cvsroot/python-ldap/python-ldap/Lib/ldap/controls/psearch.py,v
+retrieving revision 1.6
+diff -u -r1.6 psearch.py
+--- Lib/ldap/controls/psearch.py	9 Oct 2017 15:09:28 -0000	1.6
++++ Lib/ldap/controls/psearch.py	7 Nov 2017 13:40:32 -0000
+@@ -115,18 +115,16 @@
+   def decodeControlValue(self,encodedControlValue):
+     ecncValue,_ = decoder.decode(encodedControlValue,asn1Spec=EntryChangeNotificationValue())
+     self.changeType = int(ecncValue.getComponentByName('changeType'))
+-    if len(ecncValue)==3:
+-      self.previousDN = str(ecncValue.getComponentByName('previousDN'))
+-      self.changeNumber = int(ecncValue.getComponentByName('changeNumber'))
+-    elif len(ecncValue)==2:
+-      if self.changeType==8:
+-        self.previousDN = str(ecncValue.getComponentByName('previousDN'))
+-        self.changeNumber = None
+-      else:
+-        self.previousDN = None
+-        self.changeNumber = int(ecncValue.getComponentByName('changeNumber'))
++    previousDN = ecncValue.getComponentByName('previousDN')
++    if previousDN is None or not previousDN.hasValue():
++      self.previousDN = None
+     else:
+-      self.previousDN,self.changeNumber = None,None
++      self.previousDN = str(previousDN)
++    changeNumber = ecncValue.getComponentByName('changeNumber')
++    if changeNumber is None or not changeNumber.hasValue():
++      self.changeNumber = None
++    else:
++      self.changeNumber = int(changeNumber)
+     return (self.changeType,self.previousDN,self.changeNumber)
+ 
+ KNOWN_RESPONSE_CONTROLS[EntryChangeNotificationControl.controlType] = EntryChangeNotificationControl
+Index: Lib/ldap/controls/sss.py
+===================================================================
+RCS file: /cvsroot/python-ldap/python-ldap/Lib/ldap/controls/sss.py,v
+retrieving revision 1.5
+diff -u -r1.5 sss.py
+--- Lib/ldap/controls/sss.py	9 Oct 2017 15:09:28 -0000	1.5
++++ Lib/ldap/controls/sss.py	7 Nov 2017 13:40:32 -0000
+@@ -121,7 +121,9 @@
+         assert not rest, 'all data could not be decoded'
+         self.result = int(p.getComponentByName('sortResult'))
+         self.result_code = p.getComponentByName('sortResult').prettyOut(self.result)
+-        self.attribute_type_error = p.getComponentByName('attributeType')
++        attribute_type_error = p.getComponentByName('attributeType')
++        if attribute_type_error is not None and attribute_type_error.hasValue():
++            self.attribute_type_error = attribute_type_error
+ 
+ 
+ KNOWN_RESPONSE_CONTROLS[SSSRequestControl.controlType] = SSSRequestControl
+Index: Lib/ldap/controls/vlv.py
+===================================================================
+RCS file: /cvsroot/python-ldap/python-ldap/Lib/ldap/controls/vlv.py,v
+retrieving revision 1.5
+diff -u -r1.5 vlv.py
+--- Lib/ldap/controls/vlv.py	9 Oct 2017 15:09:28 -0000	1.5
++++ Lib/ldap/controls/vlv.py	7 Nov 2017 13:40:32 -0000
+@@ -130,8 +130,9 @@
+         self.result = int(p.getComponentByName('virtualListViewResult'))
+         self.result_code = p.getComponentByName('virtualListViewResult') \
+                 .prettyOut(self.result)
+-        self.context_id = p.getComponentByName('contextID')
+-        if self.context_id:
+-            self.context_id = str(self.context_id)
++        context_id = p.getComponentByName('contextID')
++        if context_id is not None and context_id.hasValue():
++            self.context_id = str(context_id)
++
+ 
+ KNOWN_RESPONSE_CONTROLS[VLVResponseControl.controlType] = VLVResponseControl

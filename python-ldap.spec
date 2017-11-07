@@ -2,7 +2,7 @@
 
 Name: python-ldap
 Version: 2.4.25
-Release: 7%{?dist}
+Release: 8%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -13,6 +13,9 @@ Source0: http://pypi.python.org/packages/source/p/python-ldap/python-ldap-%{vers
 ### Patches ###
 # Fedora specific patch
 Patch0: python-ldap-2.4.16-dirs.patch
+# Fix for pyasn1 >= 0.3
+# https://github.com/pyldap/pyldap/pull/126
+Patch1: accommodate-changed-pyasn1-behaviour.patch
 
 ### Dependencies ###
 # LDAP controls, extop, syncrepl require pyasn1
@@ -48,6 +51,7 @@ Requires: python-pyasn1, python-pyasn1-modules
 %prep
 %setup -q -n python-ldap-%{version}
 %patch0 -p1 -b .dirs
+%patch1 -p0 -b accommodate-changed-pyasn1-behaviour.patch
 
 # clean up cvs hidden files
 rm -rf Demo/Lib/ldap/.cvsignore Demo/.cvsignore Demo/Lib/ldif/.cvsignore Demo/Lib/ldap/async/.cvsignore \
@@ -74,6 +78,9 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{python_sitearch}/python_ldap-%{version}-*.egg-info
 
 %changelog
+* Tue Nov 07 2017 Christian Heimes <cheimes@redhat.com> - 0:2.4.25-8
+- Apply fix for pyasn1 >= 0.3
+
 * Sat Aug 19 2017 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 0:2.4.25-7
 - Python 2 binary package renamed to python2-ldap
   See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3
