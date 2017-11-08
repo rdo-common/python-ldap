@@ -2,7 +2,7 @@
 
 Name: python-ldap
 Version: 2.4.25
-Release: 8%{?dist}
+Release: 9%{?dist}
 Epoch: 0
 License: Python
 Group: System Environment/Libraries
@@ -78,6 +78,9 @@ sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
 %{python_sitearch}/python_ldap-%{version}-*.egg-info
 
 %changelog
+* Wed Nov 08 2017 Christian Heimes <cheimes@redhat.com> - 0:2.4.25-9
+- Fix issue in pyasn1 patch
+
 * Tue Nov 07 2017 Christian Heimes <cheimes@redhat.com> - 0:2.4.25-8
 - Apply fix for pyasn1 >= 0.3
 

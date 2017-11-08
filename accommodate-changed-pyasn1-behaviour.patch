@@ -28,7 +28,7 @@ diff -u -r1.9 syncrepl.py
 +        if cookie is None or not cookie.hasValue():
 +            self.cookie = None
 +        else:
-+            self.cookie = str(self.cookie)
++            self.cookie = str(cookie)
          self.state = self.__class__.opnames[int(state)]
          self.entryUUID = str(uuid)
 -        if self.cookie is not None:
