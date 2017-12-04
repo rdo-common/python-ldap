@@ -1,36 +1,34 @@
 ### Abstract ###
+%global prerelease b1
 
 Name: python-ldap
-Version: 2.4.25
-Release: 9%{?dist}
-Epoch: 0
+Version: 3.0.0
+Release: 0.1.%{prerelease}%{?dist}
 License: Python
 Group: System Environment/Libraries
 Summary: An object-oriented API to access LDAP directory servers
-URL: http://python-ldap.sourceforge.net/
-Source0: http://pypi.python.org/packages/source/p/python-ldap/python-ldap-%{version}.tar.gz
+URL: http://python-ldap.org/
+Source0: https://files.pythonhosted.org/packages/source/p/%{name}/%{name}-%{version}%{prerelease}.tar.gz
 
-### Patches ###
-# Fedora specific patch
-Patch0: python-ldap-2.4.16-dirs.patch
-# Fix for pyasn1 >= 0.3
-# https://github.com/pyldap/pyldap/pull/126
-Patch1: accommodate-changed-pyasn1-behaviour.patch
-
-### Dependencies ###
-# LDAP controls, extop, syncrepl require pyasn1
 
 ### Build Dependencies ###
 BuildRequires: openldap-devel
 BuildRequires: openssl-devel
-BuildRequires: python2-devel 
 BuildRequires: cyrus-sasl-devel
-
-# we don't want to provide private python extension libs
-%{?filter_setup:
-%filter_provides_in %{python_sitearch}/.*\.so$
-%filter_setup
-}
+BuildRequires: python2-devel
+BuildRequires: python2-setuptools
+BuildRequires: python3-devel
+BuildRequires: python3-setuptools
+# Test dependencies
+BuildRequires: /usr/bin/tox
+BuildRequires: openldap-servers
+BuildRequires: openldap-clients
+BuildRequires: python2-coverage
+BuildRequires: python2-pyasn1 >= 0.3.7
+BuildRequires: python2-pyasn1-modules >= 0.1.5
+BuildRequires: python3-coverage
+BuildRequires: python3-pyasn1 >= 0.3.7
+BuildRequires: python3-pyasn1-modules >= 0.1.5
 
 %global _description\
 python-ldap provides an object-oriented API for working with LDAP within\
@@ -40,44 +38,117 @@ OpenLDAP 2.x libraries, and contains modules for other LDAP-related tasks\
 
 %description %_description
 
+
 %package -n python2-ldap
 Summary: %summary
+
 Requires: openldap
-Requires: python-pyasn1, python-pyasn1-modules
+Requires: python2-pyasn1 >= 0.3.7
+Requires: python2-pyasn1-modules >= 0.1.5
+Requires: python2-setuptools
+
+Provides: python2-ldap%{?_isa} = %{version}-%{release}
 %{?python_provide:%python_provide python2-ldap}
 
 %description -n python2-ldap %_description
 
-%prep
-%setup -q -n python-ldap-%{version}
-%patch0 -p1 -b .dirs
-%patch1 -p0 -b accommodate-changed-pyasn1-behaviour.patch
 
-# clean up cvs hidden files
-rm -rf Demo/Lib/ldap/.cvsignore Demo/.cvsignore Demo/Lib/ldif/.cvsignore Demo/Lib/ldap/async/.cvsignore \
-       Demo/Lib/.cvsignore Demo/Lib/ldapurl/.cvsignore
+%package -n     python3-ldap
+Summary:        %{summary}
+
+Requires:  openldap
+Requires:  python3-pyasn1 >= 0.3.7
+Requires:  python3-pyasn1-modules >= 0.1.5
+Requires:  python3-setuptools
+%{?python_provide:%python_provide python3-ldap}
+Obsoletes: python3-pyldap
+Provides:  python3-pyldap = %{version}-%{release}
+Provides:  python3-pyldap%{?_isa} = %{version}-%{release}
+
+%description -n python3-ldap %_description
+
+
+%prep
+%setup -qc
+
+sed -i 's|#! python|#!/usr/bin/python|g' %{name}-%{version}%{prerelease}/Demo/simplebrowse.py
+
+mv %{name}-%{version}%{prerelease} python3
+cp -a python{3,2}
 
 # Fix interpreter
-sed -i 's|#! python|#!/usr/bin/python|g' Demo/simplebrowse.py
+find python2 -name '*.py' | xargs sed -i '1s|^#!/usr/bin/env python|#!%{__python2}|'
+find python3 -name '*.py' | xargs sed -i '1s|^#!/usr/bin/env python|#!%{__python3}|'
+
+# Disable warnings in test to work around "'U' mode is deprecated"
+# https://github.com/python-ldap/python-ldap/issues/96
+sed -i 's,-Werror,-Wignore,g' python3/tox.ini
+
 
 %build
-%{__python} setup.py build
+pushd python2
+%py2_build
+popd
+pushd python3
+%py3_build
+popd
+
+
+%check
+# don't download packages
+export PIP_INDEX_URL=http://host.invalid./
+export PIP_NO_DEPS=yes
+
+pushd python2
+LANG=C.UTF-8 TOXENV=py27 LOGLEVEL=10 tox --sitepackages
+popd
+
+pushd python3
+LANG=C.UTF-8 TOXENV=py%{python3_version_nodots} LOGLEVEL=10 tox --sitepackages
+popd
+
 
 %install
-%{__python} setup.py install --skip-build --root $RPM_BUILD_ROOT
+pushd python2
+%py2_install
+popd
+
+pushd python3
+%py3_install
+popd
 
 
 %files -n python2-ldap
 %defattr(-,root,root,-)
-%doc LICENCE CHANGES README TODO Demo
+%license python2/LICENCE
+%doc python2/CHANGES python2/README python2/TODO python2/Demo
 %{python_sitearch}/_ldap.so
-%{python_sitearch}/dsml.py*
 %{python_sitearch}/ldapurl.py*
 %{python_sitearch}/ldif.py*
+%{python_sitearch}/slapdtest/
 %{python_sitearch}/ldap/
-%{python_sitearch}/python_ldap-%{version}-*.egg-info
+%{python_sitearch}/python_ldap-%{version}%{prerelease}-py2.7.egg-info
+
+%files -n python3-ldap
+%defattr(-,root,root,-)
+%license python3/LICENCE
+%doc python3/CHANGES python3/README python3/TODO python3/Demo
+%{python3_sitearch}/_ldap.cpython-*.so
+%{python3_sitearch}/ldapurl.py*
+%{python3_sitearch}/ldif.py*
+%{python3_sitearch}/__pycache__/*
+%{python3_sitearch}/slapdtest/
+%{python3_sitearch}/ldap/
+%{python3_sitearch}/python_ldap-%{version}%{prerelease}-py%{python3_version}.egg-info
 
 %changelog
+* Mon Dec 04 2017 Christian Heimes <cheimes@redhat.com> - 0:2.5.99-1
+- New upstream release 3.0.0b1 (RHBZ #1496470)
+- Resolves RHBZ #1489184
+- Enable unittests
+- Remove dsml module
+- Package python3-ldap, which obsoletes python3-pyldap
+
 * Wed Nov 08 2017 Christian Heimes <cheimes@redhat.com> - 0:2.4.25-9
 - Fix issue in pyasn1 patch
 
