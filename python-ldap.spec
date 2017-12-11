@@ -1,9 +1,18 @@
 ### Abstract ###
-%global prerelease b1
+%global prerelease b2
+
+# Fix for https://bugzilla.redhat.com/show_bug.cgi?id=1520990
+# openldap does not re-register nss shutdown callbacks after nss_Shutdown is
+# called.
+%if 0%{?fedora} <= 26
+%global openldap_version 2.4.45-2
+%else  # F27+
+%global openldap_version 2.4.45-4
+%endif
 
 Name: python-ldap
 Version: 3.0.0
-Release: 0.1.%{prerelease}%{?dist}
+Release: 0.2.%{prerelease}%{?dist}
 License: Python
 Group: System Environment/Libraries
 Summary: An object-oriented API to access LDAP directory servers
@@ -12,7 +21,7 @@ Source0: https://files.pythonhosted.org/packages/source/p/%{name}/%{name}-%{vers
 
 
 ### Build Dependencies ###
-BuildRequires: openldap-devel
+BuildRequires: openldap-devel >= %{openldap_version}
 BuildRequires: openssl-devel
 BuildRequires: cyrus-sasl-devel
 BuildRequires: python2-devel
@@ -21,8 +30,8 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 # Test dependencies
 BuildRequires: /usr/bin/tox
-BuildRequires: openldap-servers
-BuildRequires: openldap-clients
+BuildRequires: openldap-servers >= %{openldap_version}
+BuildRequires: openldap-clients >= %{openldap_version}
 BuildRequires: python2-coverage
 BuildRequires: python2-pyasn1 >= 0.3.7
 BuildRequires: python2-pyasn1-modules >= 0.1.5
@@ -42,7 +51,7 @@ OpenLDAP 2.x libraries, and contains modules for other LDAP-related tasks\
 %package -n python2-ldap
 Summary: %summary
 
-Requires: openldap
+Requires: openldap >= %{openldap_version}
 Requires: python2-pyasn1 >= 0.3.7
 Requires: python2-pyasn1-modules >= 0.1.5
 Requires: python2-setuptools
@@ -56,7 +65,7 @@ Provides: python2-ldap%{?_isa} = %{version}-%{release}
 %package -n     python3-ldap
 Summary:        %{summary}
 
-Requires:  openldap
+Requires:  openldap >= %{openldap_version}
 Requires:  python3-pyasn1 >= 0.3.7
 Requires:  python3-pyasn1-modules >= 0.1.5
 Requires:  python3-setuptools
@@ -142,7 +151,11 @@ popd
 %{python3_sitearch}/python_ldap-%{version}%{prerelease}-py%{python3_version}.egg-info
 
 %changelog
-* Mon Dec 04 2017 Christian Heimes <cheimes@redhat.com> - 0:2.5.99-1
+* Mon Dec 11 2017 Christian Heimes <cheimes@redhat.com> - 3.0.0-0.2.b2
+- New upstream release 3.0.0b2 (RHBZ #1496470)
+- Require OpenLDAP with fix for NSS issue (see #1520990)
+
+* Mon Dec 04 2017 Christian Heimes <cheimes@redhat.com> - 0:3.0.0-0.1.b1
 - New upstream release 3.0.0b1 (RHBZ #1496470)
 - Resolves RHBZ #1489184
 - Enable unittests
