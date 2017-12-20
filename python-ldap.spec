@@ -1,5 +1,5 @@
 ### Abstract ###
-%global prerelease b2
+%global prerelease b3
 
 # Fix for https://bugzilla.redhat.com/show_bug.cgi?id=1520990
 # openldap does not re-register nss shutdown callbacks after nss_Shutdown is
@@ -12,7 +12,7 @@
 
 Name: python-ldap
 Version: 3.0.0
-Release: 0.2.%{prerelease}%{?dist}
+Release: 0.3.%{prerelease}%{?dist}
 License: Python
 Group: System Environment/Libraries
 Summary: An object-oriented API to access LDAP directory servers
@@ -79,8 +79,6 @@ Provides:  python3-pyldap%{?_isa} = %{version}-%{release}
 
 %prep
 %setup -qc
-
-sed -i 's|#! python|#!/usr/bin/python|g' %{name}-%{version}%{prerelease}/Demo/simplebrowse.py
 
 mv %{name}-%{version}%{prerelease} python3
 cp -a python{3,2}
@@ -151,6 +149,9 @@ popd
 %{python3_sitearch}/python_ldap-%{version}%{prerelease}-py%{python3_version}.egg-info
 
 %changelog
+* Wed Dec 20 2017 Christian Heimes <cheimes@redhat.com> - 3.0.0-0.3.b3
+- New upstream release 3.0.0b3 (RHBZ #1496470)
+
 * Mon Dec 11 2017 Christian Heimes <cheimes@redhat.com> - 3.0.0-0.2.b2
 - New upstream release 3.0.0b2 (RHBZ #1496470)
 - Require OpenLDAP with fix for NSS issue (see #1520990)
