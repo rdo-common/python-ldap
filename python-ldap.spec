@@ -1,5 +1,5 @@
 ### Abstract ###
-%global prerelease b3
+%global prerelease b4
 
 # Fix for https://bugzilla.redhat.com/show_bug.cgi?id=1520990
 # openldap does not re-register nss shutdown callbacks after nss_Shutdown is
@@ -12,13 +12,17 @@
 
 Name: python-ldap
 Version: 3.0.0
-Release: 0.3.%{prerelease}%{?dist}
+Release: 0.4.%{?prerelease}%{?dist}
 License: Python
 Group: System Environment/Libraries
 Summary: An object-oriented API to access LDAP directory servers
 URL: http://python-ldap.org/
-Source0: https://files.pythonhosted.org/packages/source/p/%{name}/%{name}-%{version}%{prerelease}.tar.gz
+Source0: https://files.pythonhosted.org/packages/source/p/%{name}/%{name}-%{version}%{?prerelease}.tar.gz
 
+# Workaround for https://github.com/python-ldap/python-ldap/issues/160
+Patch0: 0001-Ignore-SASL-methods-in-DSE-test.patch
+# https://github.com/python-ldap/python-ldap/issues/161
+Patch1: 0001-Use-correct-types-for-BER-en-decode.patch
 
 ### Build Dependencies ###
 BuildRequires: openldap-devel >= %{openldap_version}
@@ -70,7 +74,7 @@ Requires:  python3-pyasn1 >= 0.3.7
 Requires:  python3-pyasn1-modules >= 0.1.5
 Requires:  python3-setuptools
 %{?python_provide:%python_provide python3-ldap}
-Obsoletes: python3-pyldap
+Obsoletes: python3-pyldap < 3
 Provides:  python3-pyldap = %{version}-%{release}
 Provides:  python3-pyldap%{?_isa} = %{version}-%{release}
 
@@ -79,8 +83,12 @@ Provides:  python3-pyldap%{?_isa} = %{version}-%{release}
 
 %prep
 %setup -qc
+pushd %{name}-%{version}%{?prerelease}
+%patch0 -p1
+%patch1 -p1
+popd
 
-mv %{name}-%{version}%{prerelease} python3
+mv %{name}-%{version}%{?prerelease} python3
 cp -a python{3,2}
 
 # Fix interpreter
@@ -134,7 +142,7 @@ popd
 %{python_sitearch}/ldif.py*
 %{python_sitearch}/slapdtest/
 %{python_sitearch}/ldap/
-%{python_sitearch}/python_ldap-%{version}%{prerelease}-py2.7.egg-info
+%{python_sitearch}/python_ldap-%{version}%{?prerelease}-py2.7.egg-info
 
 %files -n python3-ldap
 %defattr(-,root,root,-)
@@ -146,9 +154,12 @@ popd
 %{python3_sitearch}/__pycache__/*
 %{python3_sitearch}/slapdtest/
 %{python3_sitearch}/ldap/
-%{python3_sitearch}/python_ldap-%{version}%{prerelease}-py%{python3_version}.egg-info
+%{python3_sitearch}/python_ldap-%{version}%{?prerelease}-py%{python3_version}.egg-info
 
 %changelog
+* Wed Jan 10 2018 Christian Heimes <cheimes@redhat.com> - 3.0.0-0.4.b4
+- New upstream release 3.0.0b4 (RHBZ #1496470)
+
 * Wed Dec 20 2017 Christian Heimes <cheimes@redhat.com> - 3.0.0-0.3.b3
 - New upstream release 3.0.0b3 (RHBZ #1496470)
 

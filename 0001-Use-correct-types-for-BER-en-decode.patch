@@ -1,0 +1,53 @@
+From b18b8ad1a5d826a54cff8e3656eb4b8bc9678692 Mon Sep 17 00:00:00 2001
+From: Christian Heimes <cheimes@redhat.com>
+Date: Wed, 10 Jan 2018 14:35:24 +0100
+Subject: [PATCH] Use correct types for BER en/decode
+
+ber_scanf() and ber_printf() "i" format uses ber_int_t. lber_types.h
+defines the type as int but Python code assumes the type to be unsigned
+long:
+
+typedef LBER_INT_T ber_int_t;
+
+The code was working fine on little endian machines but broke on big
+endian machines. ber_int_t is now correctly parsed as signed int.
+
+Signed-off-by: Christian Heimes <cheimes@redhat.com>
+---
+ Modules/ldapcontrol.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Modules/ldapcontrol.c b/Modules/ldapcontrol.c
+index 9522d57..ec50625 100644
+--- a/Modules/ldapcontrol.c
++++ b/Modules/ldapcontrol.c
+@@ -242,7 +242,7 @@ encode_rfc2696(PyObject *self, PyObject *args)
+     BerElement *ber = 0;
+     struct berval cookie, *ctrl_val;
+     Py_ssize_t cookie_len;
+-    unsigned long size;
++    int size = 0; /* ber_int_t is int */
+     ber_tag_t tag;
+ 
+     if (!PyArg_ParseTuple(args, "is#:encode_page_control", &size,
+@@ -300,7 +300,7 @@ decode_rfc2696(PyObject *self, PyObject *args)
+     struct berval ldctl_value;
+     ber_tag_t tag;
+     struct berval *cookiep;
+-    unsigned long count = 0;
++    int count = 0;  /* ber_int_t is int */
+     Py_ssize_t ldctl_value_len;
+ 
+     if (!PyArg_ParseTuple(args, "s#:decode_page_control",
+@@ -320,7 +320,7 @@ decode_rfc2696(PyObject *self, PyObject *args)
+         goto endlbl;
+     }
+ 
+-    res = Py_BuildValue("(kO&)", count, LDAPberval_to_object, cookiep);
++    res = Py_BuildValue("(iO&)", count, LDAPberval_to_object, cookiep);
+     ber_bvfree(cookiep);
+ 
+  endlbl:
+-- 
+2.14.3
+
