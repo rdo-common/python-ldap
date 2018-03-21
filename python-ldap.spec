@@ -1,5 +1,5 @@
 ### Abstract ###
-%global prerelease b4
+# global prerelease b4
 
 # Fix for https://bugzilla.redhat.com/show_bug.cgi?id=1520990
 # openldap does not re-register nss shutdown callbacks after nss_Shutdown is
@@ -12,17 +12,12 @@
 
 Name: python-ldap
 Version: 3.0.0
-Release: 0.5.%{?prerelease}%{?dist}
+Release: 1%{?dist}
 License: Python
 Group: System Environment/Libraries
 Summary: An object-oriented API to access LDAP directory servers
 URL: http://python-ldap.org/
 Source0: https://files.pythonhosted.org/packages/source/p/%{name}/%{name}-%{version}%{?prerelease}.tar.gz
-
-# Workaround for https://github.com/python-ldap/python-ldap/issues/160
-Patch0: 0001-Ignore-SASL-methods-in-DSE-test.patch
-# https://github.com/python-ldap/python-ldap/issues/161
-Patch1: 0001-Use-correct-types-for-BER-en-decode.patch
 
 ### Build Dependencies ###
 BuildRequires: openldap-devel >= %{openldap_version}
@@ -84,8 +79,6 @@ Provides:  python3-pyldap%{?_isa} = %{version}-%{release}
 %prep
 %setup -qc
 pushd %{name}-%{version}%{?prerelease}
-%patch0 -p1
-%patch1 -p1
 popd
 
 mv %{name}-%{version}%{?prerelease} python3
@@ -157,6 +150,9 @@ popd
 %{python3_sitearch}/python_ldap-%{version}%{?prerelease}-py%{python3_version}.egg-info
 
 %changelog
+* Wed Mar 21 2018 Christian Heimes <cheimes@redhat.com> - 3.0.0-1
+- New upstream release 3.0.0
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.0-0.5.b4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
@@ -300,7 +296,7 @@ popd
 * Wed May 17 2006 Matthew Barnes <mbarnes@redhat.com> - 2.2.0-2
 - Put back the epoch line... happy beehive?
 
-* Tue May 15 2006 Matthew Barnes <mbarnes@redhat.com> - 2.2.0-1
+* Mon May 15 2006 Matthew Barnes <mbarnes@redhat.com> - 2.2.0-1
 - Update to 2.2.0
 - Update python-ldap-2.0.6-rpath.patch and rename it to
   python-ldap-2.2.0-dirs.patch.
