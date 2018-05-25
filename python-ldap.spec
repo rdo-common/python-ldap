@@ -11,7 +11,7 @@
 %endif
 
 Name: python-ldap
-Version: 3.0.0
+Version: 3.1.0
 Release: 1%{?dist}
 License: Python
 Group: System Environment/Libraries
@@ -150,6 +150,9 @@ popd
 %{python3_sitearch}/python_ldap-%{version}%{?prerelease}-py%{python3_version}.egg-info
 
 %changelog
+* Fri May 25 2018 Christian Heimes <cheimes@redhat.com> - 3.1.0-1
+- New upstream release 3.1.0
+
 * Wed Mar 21 2018 Christian Heimes <cheimes@redhat.com> - 3.0.0-1
 - New upstream release 3.0.0
 
