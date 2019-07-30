@@ -10,6 +10,19 @@
 %global openldap_version 2.4.45-4
 %endif
 
+# RHEL7 includes the fix for rhbz#1520990 in 2.4.44-3
+%if 0%{?rhel} < 8
+%global openldap_version 2.4.44-3
+%endif
+
+%if 0%{?rhel} == 7
+%bcond_with    python3
+%else
+%bcond_without python3
+%endif
+
+
+
 Name: python-ldap
 Version: 3.1.0
 Release: 1%{?dist}
@@ -25,19 +38,22 @@ BuildRequires: openssl-devel
 BuildRequires: cyrus-sasl-devel
 BuildRequires: python2-devel
 BuildRequires: python2-setuptools
+%if 0%{?with_python3}
 BuildRequires: python3-devel
 BuildRequires: python3-setuptools
+%endif
 # Test dependencies
-BuildRequires: /usr/bin/tox
+#BuildRequires: /usr/bin/tox
 BuildRequires: openldap-servers >= %{openldap_version}
 BuildRequires: openldap-clients >= %{openldap_version}
 BuildRequires: python2-coverage
 BuildRequires: python2-pyasn1 >= 0.3.7
 BuildRequires: python2-pyasn1-modules >= 0.1.5
+%if 0%{?with_python3}
 BuildRequires: python3-coverage
 BuildRequires: python3-pyasn1 >= 0.3.7
 BuildRequires: python3-pyasn1-modules >= 0.1.5
-
+%endif
 %global _description\
 python-ldap provides an object-oriented API for working with LDAP within\
 Python programs.  It allows access to LDAP directory servers by wrapping the\
@@ -61,6 +77,7 @@ Provides: python2-ldap%{?_isa} = %{version}-%{release}
 %description -n python2-ldap %_description
 
 
+%if 0%{?with_python3}
 %package -n     python3-ldap
 Summary:        %{summary}
 
@@ -74,7 +91,7 @@ Provides:  python3-pyldap = %{version}-%{release}
 Provides:  python3-pyldap%{?_isa} = %{version}-%{release}
 
 %description -n python3-ldap %_description
-
+%endif
 
 %prep
 %setup -qc
@@ -97,9 +114,11 @@ sed -i 's,-Werror,-Wignore,g' python3/tox.ini
 pushd python2
 %py2_build
 popd
+%if 0%{?with_python3}
 pushd python3
 %py3_build
 popd
+%endif
 
 
 %check
@@ -108,22 +127,25 @@ export PIP_INDEX_URL=http://host.invalid./
 export PIP_NO_DEPS=yes
 
 pushd python2
-LANG=C.UTF-8 TOXENV=py27 LOGLEVEL=10 tox --sitepackages
+LANG=C.UTF-8 python ./setup.py test
 popd
 
+%if 0%{?with_python3}
 pushd python3
-LANG=C.UTF-8 TOXENV=py%{python3_version_nodots} LOGLEVEL=10 tox --sitepackages
+LANG=C.UTF-8 python3 ./setup.py test
 popd
-
+%endif
 
 %install
 pushd python2
 %py2_install
 popd
 
+%if 0%{?with_python3}
 pushd python3
 %py3_install
 popd
+%endif
 
 
 %files -n python2-ldap
@@ -137,6 +159,7 @@ popd
 %{python_sitearch}/ldap/
 %{python_sitearch}/python_ldap-%{version}%{?prerelease}-py2.7.egg-info
 
+%if 0%{?with_python3}
 %files -n python3-ldap
 %defattr(-,root,root,-)
 %license python3/LICENCE
@@ -148,6 +171,7 @@ popd
 %{python3_sitearch}/slapdtest/
 %{python3_sitearch}/ldap/
 %{python3_sitearch}/python_ldap-%{version}%{?prerelease}-py%{python3_version}.egg-info
+%endif
 
 %changelog
 * Fri May 25 2018 Christian Heimes <cheimes@redhat.com> - 3.1.0-1
